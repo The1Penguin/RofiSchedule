@@ -1,0 +1,14 @@
+[package]
+name = "rofi_schedule"
+version = "0.1.0"
+authors = ["The1Penguin <jesper@acorneroftheweb.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rofi = "0.2.2"
+curl = "0.4.34"
+web_ical = "0.1.2"
+chrono = "0.4.19"
+
