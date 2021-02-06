@@ -12,8 +12,8 @@ fn main() {
     for ical in &icals.events{
         if day == ical.dtsart{
             let temp = &ical.summary;
-            let mut tmp = "";
             let split = temp.split(". ");
+            let mut tmp = "";
             for i in split {
                 tmp = &i;
             }
