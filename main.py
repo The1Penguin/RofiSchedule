@@ -1,3 +1,4 @@
+#!/bin/python
 from rofi import Rofi
 from requests import get
 from ics import Calendar
