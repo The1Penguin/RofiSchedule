@@ -24,7 +24,7 @@ fn main() {
     
     dir_entries.sort();
     
-    match rofi::Rofi::new(&dir_entries).run() {
+    match rofi::Rofi::new(&dir_entries).prompt("").run() {
         Ok(_choice) => (),
         Err(rofi::Error::Interrupted) => (),
         Err(e) => println!("Error, {}", e)
