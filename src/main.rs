@@ -10,15 +10,17 @@ fn main() {
     let day = chrono::offset::Local::now();
 
     for ical in &icals.events{
-        if day == ical.dtsart{
-            let temp = &ical.summary;
-            let split = temp.split(". ");
-            let mut tmp = "";
-            for i in split {
-                tmp = &i;
+        if day.format("%F").to_string() == ical.dtsart.format("%F").to_string(){
+                let temp = &ical.summary;
+                if temp != ""{
+                let split = temp.split(". ");
+                let mut tmp = "";
+                for i in split {
+                    tmp = &i;
+                }
+                let lesson = ical.dtsart.with_timezone(&chrono::Local).format("%H:%M").to_string() + "-" + &ical.dtend.with_timezone(&chrono::Local).format("%H:%M").to_string() + " " + &tmp.to_string();
+                dir_entries.push(lesson);
             }
-            let lesson = ical.dtsart.with_timezone(&chrono::Local).format("%H:%M").to_string() + "-" + &ical.dtend.with_timezone(&chrono::Local).format("%H:%M").to_string() + " " + &tmp.to_string();
-            dir_entries.push(lesson);
         }
     }
     
