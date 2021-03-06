@@ -36,7 +36,7 @@ fn generate_day(icals: &Calendar, day:chrono::DateTime<chrono::Local>) -> std::v
     let mut dir_entries: Vec<std::string::String> = Vec::new();
 
     for ical in &icals.events{
-        if day.format("%F").to_string() == ical.dtsart.format("%F").to_string(){
+        if day.day() == ical.dtsart.day() {
                 let temp = &ical.summary;
                 if temp != ""{
                 let split = temp.split(". ");
