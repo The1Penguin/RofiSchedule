@@ -1,14 +1,10 @@
 use rofi;
 extern crate web_ical;
 use web_ical::Calendar;
-use chrono;
+use chrono::*;
 
 fn main() {
-    let uri = "https://cloud.timeedit.net/chalmers/web/public/ri.ics?sid=3&objects=196836.194&ox=0&p=0.m%2C20210321.x&e=210202&enol=t&ku=34920&k=E0128097C79129968D30F049CAEBC7B9";
-    let icals = Calendar::new(uri);
-    let day = chrono::offset::Local::now();
-    let mut dir_entries: Vec<std::string::String> = generate_day(icals, day);
-    dir_entries.sort();
+    let dir_entries = generate_next_days();
     display(dir_entries);
     }
 
@@ -20,7 +16,23 @@ fn display(dir_entries:std::vec::Vec<std::string::String>){
     }
 }
 
-fn generate_day(icals: Calendar, day:chrono::DateTime<chrono::Local>) -> std::vec::Vec<std::string::String> {
+fn generate_next_days() -> std::vec::Vec<std::string::String> {
+    let uri = "https://cloud.timeedit.net/chalmers/web/public/ri.ics?sid=3&objects=196836.194&ox=0&p=0.m%2C20210321.x&e=210202&enol=t&ku=34920&k=E0128097C79129968D30F049CAEBC7B9";
+    let icals = Calendar::new(uri);
+    let dir_entries = generate_multi_days(icals, 5);
+    return dir_entries
+}
+
+fn generate_multi_days(icals: Calendar, amount: i64) -> std::vec::Vec<std::string::String> {
+    let mut dir_entries: Vec<std::string::String> = Vec::new();
+    let day = Local::now();
+    for i in 0..amount{
+        dir_entries.extend(generate_day(&icals, day + Duration::days(i)));
+    }
+    return dir_entries
+}
+
+fn generate_day(icals: &Calendar, day:chrono::DateTime<chrono::Local>) -> std::vec::Vec<std::string::String> {
     let mut dir_entries: Vec<std::string::String> = Vec::new();
 
     for ical in &icals.events{
@@ -32,10 +44,11 @@ fn generate_day(icals: Calendar, day:chrono::DateTime<chrono::Local>) -> std::ve
                 for i in split {
                     tmp = &i;
                 }
-                let lesson = ical.dtsart.with_timezone(&chrono::Local).format("%H:%M").to_string() + "-" + &ical.dtend.with_timezone(&chrono::Local).format("%H:%M").to_string() + " " + &tmp.to_string();
+                let lesson = format!("{} {}-{} {}", ical.dtsart.weekday(), ical.dtsart.with_timezone(&chrono::Local).format("%H:%M"), &ical.dtend.with_timezone(&chrono::Local).format("%H:%M"), &tmp);
                 dir_entries.push(lesson);
             }
         }
     }
+    dir_entries.sort();
     return dir_entries
 }
