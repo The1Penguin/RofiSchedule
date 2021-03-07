@@ -37,22 +37,31 @@ fn generate_day(icals: &Calendar, day:chrono::DateTime<chrono::Local>) -> std::v
 
     for ical in &icals.events{
         if day.day() == ical.dtsart.day() {
-                let temp = &ical.summary;
-                if temp != "" {
-                    let split: Vec<&str> = temp.split(&[',', '.'][..]).collect();
-                    let tmp = split[split.len() - 2];
-                    let course_id = remove_whitespace(tmp);
-                    let lesson = format!("{} {}-{} {}",
-                                         ical.dtsart.weekday(),
-                                         ical.dtsart.with_timezone(&chrono::Local).format("%H:%M"),
-                                         &ical.dtend.with_timezone(&chrono::Local).format("%H:%M"),
-                                         &course_id,);
-                    dir_entries.push(lesson);
-            }
+            let course_id = get_course_id(ical);
+            let lesson_type = get_lesson_type(ical);
+            let lesson = format!("{} {}-{} {} {}",
+                                 ical.dtsart.weekday(),
+                                 ical.dtsart.with_timezone(&chrono::Local).format("%H:%M"),
+                                 &ical.dtend.with_timezone(&chrono::Local).format("%H:%M"),
+                                 &course_id,
+                                 &lesson_type);
+            dir_entries.push(lesson);
         }
     }
     dir_entries.sort();
     return dir_entries
+}
+
+fn get_course_id(ical: &web_ical::Events) -> String {
+    let split: Vec<&str> = ical.summary.split(&[',', '.'][..]).collect();
+    let tmp = split[split.len() - 2];
+    remove_whitespace(tmp)
+}
+
+fn get_lesson_type(ical: &web_ical::Events) -> String {
+    let split: Vec<&str> = ical.description.split("\\n").collect();
+    let tmp = split[split.len() - 2];
+    remove_whitespace(tmp)
 }
 
 fn remove_whitespace(s: &str) -> String {
