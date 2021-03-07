@@ -38,17 +38,23 @@ fn generate_day(icals: &Calendar, day:chrono::DateTime<chrono::Local>) -> std::v
     for ical in &icals.events{
         if day.day() == ical.dtsart.day() {
                 let temp = &ical.summary;
-                if temp != ""{
-                let split = temp.split(". ");
-                let mut tmp = "";
-                for i in split {
-                    tmp = &i;
-                }
-                let lesson = format!("{} {}-{} {}", ical.dtsart.weekday(), ical.dtsart.with_timezone(&chrono::Local).format("%H:%M"), &ical.dtend.with_timezone(&chrono::Local).format("%H:%M"), &tmp);
-                dir_entries.push(lesson);
+                if temp != "" {
+                    let split: Vec<&str> = temp.split(&[',', '.'][..]).collect();
+                    let tmp = split[split.len() - 2];
+                    let course_id = remove_whitespace(tmp);
+                    let lesson = format!("{} {}-{} {}",
+                                         ical.dtsart.weekday(),
+                                         ical.dtsart.with_timezone(&chrono::Local).format("%H:%M"),
+                                         &ical.dtend.with_timezone(&chrono::Local).format("%H:%M"),
+                                         &course_id,);
+                    dir_entries.push(lesson);
             }
         }
     }
     dir_entries.sort();
     return dir_entries
+}
+
+fn remove_whitespace(s: &str) -> String {
+    s.chars().filter(|c| !c.is_whitespace()).collect()
 }
