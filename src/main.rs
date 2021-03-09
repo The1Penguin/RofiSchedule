@@ -54,15 +54,24 @@ fn generate_day(icals: &Calendar, day:chrono::DateTime<chrono::Local>) -> std::v
 
 fn get_course_id(ical: &web_ical::Events) -> String {
     let split: Vec<&str> = ical.summary.split(&[',', '.'][..]).collect();
-    let tmp = split[split.len() - 2];
-    remove_whitespace(tmp)
+    let mut tmp = "";
+    if split.len() >= 2{
+        tmp = split[split.len() - 2];
+        return remove_whitespace(tmp)
+    } else {
+        tmp = split[split.len() - 1];
+        return tmp.to_owned()
+    }
 }
 
 fn get_lesson_type(ical: &web_ical::Events) -> String {
     let split: Vec<&str> = ical.description.split("\\n").collect();
-    let tmp = split[split.len() - 2];
+    let mut tmp = "";
+    if split.len() > 2{
+        tmp = split[split.len() - 2];
+    } 
     remove_whitespace(tmp)
-}
+    }
 
 fn remove_whitespace(s: &str) -> String {
     s.chars().filter(|c| !c.is_whitespace()).collect()
