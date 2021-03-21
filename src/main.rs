@@ -55,8 +55,11 @@ fn generate_day(icals: &Calendar, day:chrono::DateTime<chrono::Local>) -> std::v
 fn get_course_id(ical: &web_ical::Events) -> String {
     let split: Vec<&str> = ical.summary.split(&[',', '.'][..]).collect();
     let mut tmp = "";
-    if split.len() >= 2{
+    if split.len() >= 4{
         tmp = split[split.len() - 2];
+        return remove_whitespace(tmp)
+    } else if split.len() >= 3{
+        tmp = split[split.len() - 3];
         return remove_whitespace(tmp)
     } else {
         tmp = split[split.len() - 1];
