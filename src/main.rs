@@ -17,7 +17,7 @@ fn display(dir_entries:std::vec::Vec<std::string::String>){
 }
 
 fn generate_next_days() -> std::vec::Vec<std::string::String> {
-    let uri = "https://cloud.timeedit.net/chalmers/web/public/ri.ics?sid=3&objects=196836.194&ox=0&p=0.m%2C20210321.x&e=210202&enol=t&ku=34920&k=E0128097C79129968D30F049CAEBC7B9";
+    let uri = "https://cloud.timeedit.net/chalmers/web/public/ri.ics?sid=3&objects=196836.194&ox=0&p=0.m%2C20210606.x&e=210321&enol=t";
     let icals = Calendar::new(uri);
     let dir_entries = generate_multi_days(icals, 5);
     return dir_entries
@@ -36,7 +36,7 @@ fn generate_day(icals: &Calendar, day:chrono::DateTime<chrono::Local>) -> std::v
     let mut dir_entries: Vec<std::string::String> = Vec::new();
 
     for ical in &icals.events{
-        if day.day() == ical.dtsart.day() {
+        if day.date() == ical.dtsart.date() {
             let course_id = get_course_id(ical);
             let lesson_type = get_lesson_type(ical);
             let lesson = format!("{} {}-{} {} {}",
